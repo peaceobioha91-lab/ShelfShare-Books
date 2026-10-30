@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, BookOpen, Heart, MapPin, Sparkles } from "lucide-react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Home", description: "Find your next favourite story at ShelfShare Books, Ekenwan Community Library in Benin City, Nigeria." };
 
 const picks = [
   { title: "The Famished Road", author: "Ben Okri", type: "FICTION", colour: "#d8bba0", initials: "FR" },

@@ -3,8 +3,8 @@ import "./globals.css";
 import { Navbar, Footer } from "@/components/SiteChrome";
 
 export const metadata: Metadata = {
-  title: "ShelfShare Books | Ekenwan Community Library",
-  description: "A welcoming community library for readers in Benin City, Edo State.",
+  title: { default: "ShelfShare Books | Ekenwan Community Library", template: "%s | ShelfShare Books" },
+  description: "Discover, borrow and share books at Ekenwan Community Library in Benin City, Edo State, Nigeria.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
