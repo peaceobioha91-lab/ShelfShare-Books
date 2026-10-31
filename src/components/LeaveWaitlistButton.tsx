@@ -27,5 +27,5 @@ export function LeaveWaitlistButton({ entryId }: { entryId: string }) {
     }
   }
 
-  return <div className="mt-4"><button type="button" onClick={leave} disabled={busy} className="btn btn-outline !min-h-[40px] !px-4 !text-xs disabled:cursor-wait disabled:opacity-70">{busy ? "Leaving…" : "Leave queue"}</button>{error && <p role="alert" className="mt-2 text-xs text-[#914e39]">{error}</p>}</div>;
+  return <div className="mt-4"><button type="button" onClick={leave} disabled={busy} className="btn btn-outline !min-h-[40px] !px-4 !text-xs disabled:cursor-wait disabled:opacity-70">{busy ? "Leaving…" : "Leave waitlist"}</button>{error && <p role="alert" className="mt-2 text-xs text-[#914e39]">{error}</p>}</div>;
 }

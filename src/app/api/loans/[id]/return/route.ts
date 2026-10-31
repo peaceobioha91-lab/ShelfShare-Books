@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Pool } from "@neondatabase/serverless";
-import { cookies } from "next/headers";
-import { SESSION_COOKIE, verifySessionToken } from "@/lib/session-token";
+import { getCurrentUser } from "@/lib/session";
 import { compactWaitlistPositions } from "@/lib/waitlist-queue";
 import { sendWaitlistHoldEmail } from "@/lib/notifications";
 
@@ -11,8 +10,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   if (request.headers.get("origin") !== request.nextUrl.origin || !request.headers.get("content-type")?.startsWith("application/json")) {
     return NextResponse.json({ error: "Request could not be verified." }, { status: 403 });
   }
-  const token = (await cookies()).get(SESSION_COOKIE)?.value;
-  const session = token ? await verifySessionToken(token) : null;
+  const session = await getCurrentUser();
   if (!session) return NextResponse.json({ error: "Log in as a librarian to check in books." }, { status: 401 });
   if (session.role !== "librarian") return NextResponse.json({ error: "Only librarians can check in books." }, { status: 403 });
   const { id } = await params;

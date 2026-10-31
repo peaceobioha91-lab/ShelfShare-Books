@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Pool } from "@neondatabase/serverless";
-import { cookies } from "next/headers";
-import { SESSION_COOKIE, verifySessionToken } from "@/lib/session-token";
+import { getCurrentUser } from "@/lib/session";
 
 export const runtime = "nodejs";
 
@@ -11,8 +10,7 @@ function fail(error: string, status: number) {
 
 export async function POST(request: NextRequest) {
   if (request.headers.get("origin") !== request.nextUrl.origin || !request.headers.get("content-type")?.startsWith("application/json")) return fail("Request could not be verified.", 403);
-  const token = (await cookies()).get(SESSION_COOKIE)?.value;
-  const session = token ? await verifySessionToken(token) : null;
+  const session = await getCurrentUser();
   if (!session) return fail("Log in with a member account to request a book.", 401);
   if (session.role !== "member") return fail("Only members can request books.", 403);
   let body: { bookId?: unknown };

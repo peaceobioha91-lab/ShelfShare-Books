@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Pool } from "@neondatabase/serverless";
-import { cookies } from "next/headers";
-import { SESSION_COOKIE, verifySessionToken } from "@/lib/session-token";
+import { getCurrentUser } from "@/lib/session";
 import { compactWaitlistPositions } from "@/lib/waitlist-queue";
 import { sendWaitlistHoldEmail } from "@/lib/notifications";
 
@@ -9,8 +8,7 @@ export const runtime = "nodejs";
 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   if (request.headers.get("origin") !== request.nextUrl.origin) return NextResponse.json({ error: "Request could not be verified." }, { status: 403 });
-  const token = (await cookies()).get(SESSION_COOKIE)?.value;
-  const session = token ? await verifySessionToken(token) : null;
+  const session = await getCurrentUser();
   if (!session) return NextResponse.json({ error: "Log in to manage your waitlist." }, { status: 401 });
   if (session.role !== "member") return NextResponse.json({ error: "Only members can leave a waitlist." }, { status: 403 });
   const { id } = await params;

@@ -31,7 +31,7 @@ export function AuthForm({ mode, nextPath }: { mode: "login" | "signup"; nextPat
         setError(result.error || "We couldn’t complete that request. Please try again.");
         return;
       }
-      const destination = signup ? "/member" : nextPath || (result.role === "librarian" ? "/librarian" : "/member");
+      const destination = signup ? "/member" : nextPath?.startsWith("/pricing") ? nextPath : result.role === "librarian" ? "/librarian" : "/member";
       router.replace(destination);
       router.refresh();
     } catch {

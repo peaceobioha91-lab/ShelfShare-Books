@@ -14,9 +14,7 @@ export async function middleware(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
   if (pathname.startsWith("/librarian") && session.role !== "librarian") {
-    const denied = new URL("/member", request.url);
-    denied.searchParams.set("error", "access-denied");
-    return NextResponse.redirect(denied);
+    return NextResponse.redirect(new URL("/access-denied", request.url));
   }
   if (pathname.startsWith("/member") && session.role !== "member") {
     return NextResponse.redirect(new URL("/librarian", request.url));

@@ -35,6 +35,8 @@ export type PendingBorrowRequest = {
   requested_at: string;
 };
 
+export type MemberBorrowRequest = { id: string; book_title: string; book_author: string; requested_at: string };
+
 export type OverdueLoan = OpenLoan & { days_late: number };
 
 export async function getMemberLoans(memberId: string): Promise<MemberLoan[] | null> {
@@ -88,6 +90,21 @@ export async function getPendingBorrowRequests(): Promise<PendingBorrowRequest[]
     ORDER BY r.requested_at ASC
   `;
   return rows as unknown as PendingBorrowRequest[];
+}
+
+export async function getMemberPendingBorrowRequests(memberId: string): Promise<MemberBorrowRequest[] | null> {
+  const connectionString = process.env.DATABASE_URL;
+  if (!connectionString) return null;
+  const sql = neon(connectionString);
+  const rows = await sql`
+    SELECT r.id::text AS id, b.title AS book_title, b.author AS book_author,
+           r.requested_at::text AS requested_at
+    FROM borrow_requests r
+    JOIN books b ON b.id = r.book_id
+    WHERE r.member_id = ${memberId} AND r.status = 'pending'
+    ORDER BY r.requested_at ASC
+  `;
+  return rows as unknown as MemberBorrowRequest[];
 }
 
 export async function getOverdueLoans(): Promise<OverdueLoan[] | null> {

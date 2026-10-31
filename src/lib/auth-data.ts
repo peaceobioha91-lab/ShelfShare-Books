@@ -34,6 +34,16 @@ export async function findMemberById(id: string): Promise<AuthMember | null> {
   return (rows[0] as unknown as AuthMember | undefined) ?? null;
 }
 
+export async function getMemberMembership(id: string): Promise<{ plan: string | null; paid_until: string | null } | null> {
+  const sql = getSql();
+  if (!sql) throw new Error("Database is not configured.");
+  const rows = await sql`
+    SELECT plan, paid_until::text AS paid_until
+    FROM members WHERE id = ${id} AND role = 'member' LIMIT 1
+  `;
+  return (rows[0] as unknown as { plan: string | null; paid_until: string | null } | undefined) ?? null;
+}
+
 export async function insertMember(input: {
   name: string;
   email: string;
