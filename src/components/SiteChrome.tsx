@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { BookOpen, Menu, X, ArrowUpRight } from "lucide-react";
 
-const links = [{ href: "/catalogue", label: "Catalogue" }, { href: "/pricing", label: "Membership" }, { href: "/#about", label: "About us" }];
+const links = [{ href: "/catalogue", label: "Catalogue" }, { href: "/member/waitlist", label: "Waitlist" }, { href: "/pricing", label: "Membership" }, { href: "/#about", label: "About us" }];
 
 export function Navbar() {
   const [open, setOpen] = useState(false);

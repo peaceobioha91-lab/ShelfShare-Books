@@ -14,10 +14,13 @@ CREATE TABLE IF NOT EXISTS books (
   title TEXT NOT NULL,
   author TEXT NOT NULL,
   category TEXT NOT NULL,
+  cover_url TEXT,
   copies_total INTEGER NOT NULL DEFAULT 1 CHECK (copies_total >= 0),
   copies_available INTEGER NOT NULL DEFAULT 1 CHECK (copies_available >= 0 AND copies_available <= copies_total),
   UNIQUE (title, author)
 );
+
+ALTER TABLE books ADD COLUMN IF NOT EXISTS cover_url TEXT;
 
 CREATE TABLE IF NOT EXISTS loans (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
