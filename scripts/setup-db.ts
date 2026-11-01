@@ -29,6 +29,27 @@ const books = [
   ["Becoming Nigerian: A Guide", "Elnathan John", "Satire"],
 ] as const;
 
+const bookCoverIds: Record<string, number> = {
+  "Things Fall Apart": 12816943,
+  "No Longer at Ease": 6627849,
+  "Arrow of God": 7135325,
+  "A Man of the People": 6535892,
+  "Anthills of the Savannah": 8372206,
+  "Purple Hibiscus": 12063933,
+  "Half of a Yellow Sun": 8472660,
+  Americanah: 8474037,
+  "We Should All Be Feminists": 11324542,
+  "The Joys of Motherhood": 275135,
+  "Second-Class Citizen": 275150,
+  Efuru: 275035,
+  "The Famished Road": 13858305,
+  "Stay with Me": 10250668,
+  "My Sister, the Serial Killer": 10721487,
+  "The Concubine": 6706839,
+  "The Fishermen": 9139289,
+  Freshwater: 8456947,
+};
+
 const nonfictionBooks = [
   { title: "The 21 Irrefutable Laws of Leadership", author: "John C. Maxwell", category: "Leadership", coverId: 1465659, copies: 1 },
   { title: "Leaders Eat Last", author: "Simon Sinek", category: "Leadership", coverId: 8246311, copies: 2 },
@@ -75,11 +96,12 @@ async function main() {
       ["ShelfShare Librarian", librarianEmail, passwordHash],
     );
     for (const [title, author, category] of books) {
+      const coverId = bookCoverIds[title];
       await client.query(
-        `INSERT INTO books (title, author, category, copies_total, copies_available)
-         VALUES ($1, $2, $3, 1, 1)
-         ON CONFLICT (title, author) DO NOTHING`,
-        [title, author, category],
+        `INSERT INTO books (title, author, category, cover_url, copies_total, copies_available)
+         VALUES ($1, $2, $3, $4, 1, 1)
+         ON CONFLICT (title, author) DO UPDATE SET cover_url = COALESCE(books.cover_url, EXCLUDED.cover_url)`,
+        [title, author, category, coverId ? `https://covers.openlibrary.org/b/id/${coverId}-L.jpg` : null],
       );
     }
     for (const book of nonfictionBooks) {
